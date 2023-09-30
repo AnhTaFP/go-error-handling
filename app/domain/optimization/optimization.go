@@ -14,8 +14,8 @@ type DiscountOptimizer struct {
 	flagService FlagService
 }
 
-func NewDiscountOptimizer(flagService FlagService) *DiscountOptimizer {
-	return &DiscountOptimizer{flagService: flagService}
+func NewDiscountOptimizer(entry *logrus.Entry, flagService FlagService) *DiscountOptimizer {
+	return &DiscountOptimizer{entry: entry, flagService: flagService}
 }
 
 func (o *DiscountOptimizer) Optimize(ctx context.Context, ds []discounts.Discount) []discounts.Discount {
