@@ -15,16 +15,16 @@ import (
 )
 
 func main() {
-	authService := auth.NewService("auth service URL")
-	discountsRepository := discounts.NewDB("db-host", "db-username", "db-password")
-	flagService := flag.NewService("flag service URL")
-	optimizer := optimization.NewDiscountOptimizer(flagService)
-
 	logger := logrus.StandardLogger()
 	logger.SetFormatter(&logrus.JSONFormatter{
 		PrettyPrint: true,
 	})
 	entry := logrus.NewEntry(logger)
+
+	authService := auth.NewService("auth service URL")
+	discountsRepository := discounts.NewDB("db-host", "db-username", "db-password")
+	flagService := flag.NewService("flag service URL")
+	optimizer := optimization.NewDiscountOptimizer(entry, flagService)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/discounts", http.ListDiscounts(entry, authService, discountsRepository, optimizer))
