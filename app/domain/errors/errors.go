@@ -2,7 +2,6 @@ package errors
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 )
 
@@ -32,10 +31,34 @@ func (e Error) Unwrap() error {
 	return e.Inner
 }
 
-func Wrap(e error, misc map[string]interface{}, messageF string, messageArgs ...interface{}) Error {
+func (e Error) Is(target error) bool {
+	tErr, ok := target.(Error)
+	if !ok {
+		return false
+	}
+
+	if e.Error() == tErr.Error() {
+		return true
+	}
+
+	inner := e.Inner
+	for {
+		if inner == nil {
+			return false
+		}
+
+		if inner.Error() == tErr.Error() {
+			return true
+		}
+
+		inner = errors.Unwrap(inner)
+	}
+}
+
+func Wrap(e error, friendlyMessage string, misc map[string]interface{}) Error {
 	return Error{
 		Inner:           e,
-		FriendlyMessage: fmt.Sprintf(messageF, messageArgs...),
+		FriendlyMessage: friendlyMessage,
 		Misc:            misc,
 	}
 }
