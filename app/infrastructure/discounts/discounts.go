@@ -29,10 +29,10 @@ func (db *DB) List(ctx context.Context, customer string) ([]discounts.Discount, 
 		// the usual way to wrap error
 		// return nil, fmt.Errorf("error querying db: %w", err)
 		// instead, we should do
-		return nil, domainerrors.Wrap(err, map[string]interface{}{
+		return nil, domainerrors.Wrap(err, "cannot get discounts list for customer "+customer, map[string]interface{}{
 			"category": "infrastructure",
 			"service":  "discounts db",
-		}, "cannot get discounts list for customer %s", customer)
+		})
 	}
 
 	return ds, nil

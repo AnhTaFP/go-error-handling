@@ -22,10 +22,10 @@ func NewService(url string) *Service {
 func (s *Service) GetFlag(ctx context.Context, flag string) (*optimization.Flag, error) {
 	f, err := s.get(ctx, flag)
 	if err != nil {
-		return nil, domainerrors.Wrap(err, map[string]interface{}{
+		return nil, domainerrors.Wrap(err, "cannot get flag value for "+flag, map[string]interface{}{
 			"category": "infrastructure",
 			"service":  "flag",
-		}, "cannot get flag value for %", flag)
+		})
 	}
 
 	return f, nil

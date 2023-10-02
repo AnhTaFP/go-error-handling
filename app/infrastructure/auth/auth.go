@@ -22,17 +22,17 @@ func (s *Service) VerifyToken(ctx context.Context, token string) error {
 		// the usual way to wrap error
 		// return fmt.Errorf("error verifying token: %w", err)
 		// instead we should do
-		return domainerrors.Wrap(err, map[string]interface{}{
+		return domainerrors.Wrap(err, "cannot verify customer token", map[string]interface{}{
 			"category": "infrastructure",
 			"service":  "auth",
-		}, "cannot verify customer token")
+		})
 	}
 
 	if !tk.valid {
-		return domainerrors.Wrap(nil, map[string]interface{}{
+		return domainerrors.Wrap(nil, "invalid customer token", map[string]interface{}{
 			"category": "infrastructure",
 			"service":  "auth",
-		}, "invalid customer token")
+		})
 	}
 
 	return nil

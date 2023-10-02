@@ -26,12 +26,12 @@ func ListDiscounts(
 
 			// if err is domainerrors.Error, then return only the friendly message to the clients.
 			if dErr, ok := err.(domainerrors.Error); ok {
-				http.Error(w, dErr.FriendlyMessage, http.StatusInternalServerError)
+				respondError(w, dErr.FriendlyMessage)
 				return
 			}
 
 			// otherwise we return a generic message to the clients.
-			http.Error(w, "internal server error", http.StatusInternalServerError)
+			respondError(w, "internal server error")
 			return
 		}
 
@@ -48,6 +48,17 @@ func ListDiscounts(
 		w.WriteHeader(http.StatusOK)
 		w.Write(b)
 	}
+}
+
+func respondError(w http.ResponseWriter, msg string) {
+	var e struct {
+		Error string `json:"error"`
+	}
+
+	e.Error = msg
+	b, _ := json.Marshal(e)
+	w.WriteHeader(http.StatusInternalServerError)
+	w.Write(b)
 }
 
 func logError(entry *logrus.Entry, err error) {
