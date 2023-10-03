@@ -16,19 +16,20 @@ func (e *Error) Error() string {
 		return ""
 	}
 
-	var msg []string
-	unwrapped := errors.Unwrap(e)
+	var errBuilder strings.Builder
+	errBuilder.WriteString(e.FriendlyMessage)
 
+	unwrapped := errors.Unwrap(e)
 	for unwrapped != nil {
-		msg = append(msg, unwrapped.Error())
+		unwrappedMsg := unwrapped.Error()
+		if unwrappedMsg != "" {
+			errBuilder.WriteString(": ")
+			errBuilder.WriteString(unwrappedMsg)
+		}
 		unwrapped = errors.Unwrap(unwrapped)
 	}
 
-	if len(msg) > 0 {
-		return e.FriendlyMessage + ": " + strings.Join(msg, ": ")
-	}
-
-	return e.FriendlyMessage
+	return errBuilder.String()
 }
 
 func (e *Error) Unwrap() error {
