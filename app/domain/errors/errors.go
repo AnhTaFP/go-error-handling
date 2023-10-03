@@ -11,7 +11,11 @@ type Error struct {
 	Misc            map[string]interface{}
 }
 
-func (e Error) Error() string {
+func (e *Error) Error() string {
+	if e == nil {
+		return ""
+	}
+
 	var msg []string
 	unwrapped := errors.Unwrap(e)
 
@@ -27,14 +31,22 @@ func (e Error) Error() string {
 	return e.FriendlyMessage
 }
 
-func (e Error) Unwrap() error {
+func (e *Error) Unwrap() error {
+	if e == nil {
+		return nil
+	}
+
 	return e.Inner
 }
 
-func (e Error) Is(target error) bool {
-	tErr, ok := target.(Error)
+func (e *Error) Is(target error) bool {
+	tErr, ok := target.(*Error)
 	if !ok {
 		return false
+	}
+
+	if e == nil {
+		return target == nil
 	}
 
 	if e.Error() == tErr.Error() {
@@ -55,8 +67,8 @@ func (e Error) Is(target error) bool {
 	}
 }
 
-func Wrap(e error, friendlyMessage string, misc map[string]interface{}) Error {
-	return Error{
+func Wrap(e error, friendlyMessage string, misc map[string]interface{}) *Error {
+	return &Error{
 		Inner:           e,
 		FriendlyMessage: friendlyMessage,
 		Misc:            misc,

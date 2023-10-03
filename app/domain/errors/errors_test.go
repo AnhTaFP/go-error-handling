@@ -29,5 +29,14 @@ func TestErrors(t *testing.T) {
 		assert.True(t, errors.Is(e3, e2))
 		assert.True(t, errors.Is(e3, e3))
 		assert.False(t, errors.Is(e3, e4))
+
+		emptyErr := errors.New("")
+		var x *Error
+		var y *Error
+
+		assert.True(t, errors.Is(y, x))
+		assert.True(t, errors.Is(x, y))
+		assert.False(t, errors.Is(emptyErr, x))
+		assert.False(t, errors.Is(x, emptyErr))
 	})
 }
