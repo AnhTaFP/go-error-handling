@@ -25,7 +25,7 @@ func ListDiscounts(
 			logError(entry, err)
 
 			// if err is domainerrors.Error, then return only the friendly message to the clients.
-			if dErr, ok := err.(domainerrors.Error); ok {
+			if dErr, ok := err.(*domainerrors.Error); ok {
 				respondError(w, dErr.FriendlyMessage)
 				return
 			}
@@ -62,7 +62,7 @@ func respondError(w http.ResponseWriter, msg string) {
 }
 
 func logError(entry *logrus.Entry, err error) {
-	domainErr, ok := err.(domainerrors.Error)
+	domainErr, ok := err.(*domainerrors.Error)
 	if ok {
 		entry.WithError(domainErr).WithFields(logrus.Fields{
 			"category": domainErr.Misc["category"],

@@ -33,7 +33,7 @@ func (o *DiscountOptimizer) Optimize(ctx context.Context, ds []discounts.Discoun
 }
 
 func (o *DiscountOptimizer) logError(err error) {
-	domainErr, ok := err.(domainerrors.Error)
+	domainErr, ok := err.(*domainerrors.Error)
 	if ok {
 		o.entry.WithError(domainErr).WithFields(logrus.Fields{
 			"category": domainErr.Misc["category"],
